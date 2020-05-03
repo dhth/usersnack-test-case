@@ -13,13 +13,9 @@ from usersnack import settings as app_settings
 
 from . import util
 from .models import FoodItem, Order, OrderDetail
-from .serializers import (
-    CreateOrderSerializer,
-    ExtraSerializer,
-    OrderDetailResponseSerializer,
-    OrderSerializer,
-    PizzaSerializer,
-)
+from .serializers import (CreateOrderSerializer, ExtraSerializer,
+                          OrderDetailResponseSerializer, OrderSerializer,
+                          PizzaSerializer)
 
 
 class PizzaList(APIView):
