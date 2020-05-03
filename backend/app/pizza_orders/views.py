@@ -2,9 +2,13 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
+from rest_framework.pagination import PageNumberPagination
 
 from .models import Movie, FoodItem
 from .serializers import MovieSerializer, FoodItemSerializer
+
+from django.core.paginator import Paginator
+from usersnack import settings as app_settings
 
 # Create your views here.
 from django.http import JsonResponse
@@ -42,8 +46,24 @@ class MovieDetail(APIView):
         return Response(serializer.data)
 
 
-class PizzaList(APIView):
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 2
+    page_size_query_param = "page_size"
+    max_page_size = 5
+
+
+class PizzaList(generics.GenericAPIView):
+    # pagination_class = StandardResultsSetPagination
+
     def get(self, request, format=None):
-        pizzas = FoodItem.objects.filter(item_type="pizza")
-        serializer = FoodItemSerializer(pizzas, many=True)
+
+        page_num = int(request.GET.get("page_num", 1))
+        pizzas = FoodItem.objects.filter(item_type="pizza").order_by("id")
+        paginator = Paginator(pizzas, app_settings.DEFAULT_PAGINATION_SIZE)
+        if page_num > paginator.num_pages:
+            return JsonResponse(
+                {"success": False, "detail": "page_num exceeded limit"}
+            )
+        pizzas_page = paginator.page(page_num)
+        serializer = FoodItemSerializer(pizzas_page, many=True)
         return Response(serializer.data)

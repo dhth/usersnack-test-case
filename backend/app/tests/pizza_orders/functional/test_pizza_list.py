@@ -4,7 +4,7 @@ import pytest
 
 
 @pytest.mark.django_db
-def test_get_all_movies(client, add_food_item):
+def test_get_pizzas(client, add_food_item):
     food_item_1 = add_food_item(
         name="Test Pizza 1",
         item_type="pizza",
