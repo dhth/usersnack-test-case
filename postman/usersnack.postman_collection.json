@@ -1,0 +1,150 @@
+{
+	"info": {
+		"_postman_id": "9d9f5fc7-6de4-49c6-adb9-d63a4d0366af",
+		"name": "usersnack",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "api/pizzas/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/pizzas/?page_num=1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"pizzas",
+						""
+					],
+					"query": [
+						{
+							"key": "page_num",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/extras/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/extras/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"extras",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/createorder/",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"base_pizza\": 12,\n    \"extras\": [\n        {\n            \"extra\": 15,\n            \"quantity\": 1\n        },\n        {\n            \"extra\": 20,\n            \"quantity\": 5\n        }\n    ],\n    \"user_name\": \"Dhruv\",\n    \"user_address\": \"Gotham\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/createorder/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"createorder",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/orders/<id>/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/orders/1",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"orders",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/orders/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/orders/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"orders",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "2578b9f5-4954-4b89-b613-329271924279",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "bbaac8e4-8591-4c4a-abdf-276ede0501bc",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "54fbc99c-d058-489e-a6e5-8d59002a4eb0",
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

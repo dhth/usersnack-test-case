@@ -106,6 +106,8 @@ class OrderDetailView(APIView):
     def get_order_components(self, pk):
         order_obj = get_object_or_404(Order, pk=pk)
         try:
+            # query OrderDetail and FoodItem, and calculate
+            # total amount per item
             return (
                 OrderDetail.objects.filter(order_id=pk)
                 .values("food_item__name", "food_item__item_type", "quantity",)

@@ -60,7 +60,7 @@ class CreateOrderSerializer(serializers.Serializer):
                     user_name=validated_data["user_name"],
                     user_address=validated_data["user_address"],
                 )
-
+                # save to Order
                 new_order.save()
 
                 util.log(
@@ -74,13 +74,15 @@ class CreateOrderSerializer(serializers.Serializer):
                     food_item=validated_data["base_pizza"],
                     quantity=1,
                 )
+                # save base pizza to OrderDetail
                 new_order_detail.save()
-                for extra in validated_data["extras"]:
+                for extra in validated_data.get("extras", []):
                     extra_row = OrderDetail(
                         order_id=new_order,
                         food_item=extra["extra"],
                         quantity=extra["quantity"],
                     )
+                    # Save extra to OrderDetail, if any
                     extra_row.save()
 
                 util.log(

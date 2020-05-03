@@ -85,6 +85,11 @@ A live version of the service is running on Heroku here: [https://evening-scrubl
     curl --location --request GET 'http://127.0.0.1:8000/api/orders/'
     ```
 
+## Postman
+
+Postman collection containing the above requests can be found under the [postman](postman) directory.
+
+
 ## Tests
 
 ```
