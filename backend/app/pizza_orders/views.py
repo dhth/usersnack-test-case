@@ -19,46 +19,8 @@ from decimal import Decimal
 from django.core.paginator import Paginator
 from usersnack import settings as app_settings
 
-# Create your views here.
 from django.http import JsonResponse
-
-
-def ping(request):
-    data = {"ping": "pong!"}
-    return JsonResponse(data)
-
-
-class MovieList(APIView):
-    def get(self, request, format=None):
-        movies = Movie.objects.all()
-        serializer = MovieSerializer(movies, many=True)
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = MovieSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class MovieDetail(APIView):
-    def get_object(self, pk):
-        try:
-            return Movie.objects.get(pk=pk)
-        except Movie.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        movie = self.get_object(pk)
-        serializer = MovieSerializer(movie)
-        return Response(serializer.data)
-
-
-class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 2
-    page_size_query_param = "page_size"
-    max_page_size = 5
+from . import util
 
 
 class PizzaList(APIView):
@@ -68,6 +30,14 @@ class PizzaList(APIView):
         pizzas = FoodItem.objects.filter(item_type="pizza").order_by("id")
         paginator = Paginator(pizzas, app_settings.DEFAULT_PAGINATION_SIZE)
         if page_num > paginator.num_pages:
+            util.log(
+                "error",
+                message="Pizza List: Page Num Exceeded",
+                context={
+                    "page_num": page_num,
+                    "total_pages": paginator.num_pages,
+                },
+            )
             return JsonResponse(
                 {"success": False, "detail": "page_num exceeded limit"}
             )
@@ -80,20 +50,36 @@ class ExtraList(APIView):
     def get(self, request):
         extras = FoodItem.objects.filter(item_type="extra").order_by("id")
         serializer = ExtraSerializer(extras, many=True)
-        # return Response(serializer.data)
         return JsonResponse({"success": True, "extras": serializer.data})
 
 
 class CreateOrder(APIView):
+    """
+    Create a order
+    """
+
     def post(self, request, format=None):
         serializer = CreateOrderSerializer(data=request.data)
         if serializer.is_valid():
             new_order = serializer.save()
-            new_order_serialized = OrderSerializer(new_order, many=False)
+            if new_order is not None:
+                new_order_serialized = OrderSerializer(new_order, many=False)
+                return JsonResponse(
+                    {"success": True, "order": new_order_serialized.data,}
+                )
             return JsonResponse(
-                {"success": True, "order": new_order_serialized.data,}
+                {"success": False, "detail": "Internal Server Error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
         else:
+            util.log(
+                "error",
+                message="Error Creating order",
+                context={
+                    "request_data": request.data,
+                    "errors": serializer.errors,
+                },
+            )
             return JsonResponse(
                 {"success": False, "errors": serializer.errors},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -115,6 +101,11 @@ class OrderDetailView(APIView):
                 )
             )
         except Exception as e:
+            util.log(
+                "error",
+                message="Error fetching order details",
+                context={"pk": pk, "error": str(e),},
+            )
             raise Http404
 
     def get(self, request, pk, format=None):
@@ -138,4 +129,3 @@ class OrderListView(APIView):
         orders = Order.objects.all()
         serializer = OrderSerializer(orders, many=True)
         return JsonResponse({"success": True, "orders": serializer.data})
-        # return Response(serializer.data)

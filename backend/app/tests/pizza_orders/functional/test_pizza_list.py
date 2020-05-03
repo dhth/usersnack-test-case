@@ -1,5 +1,3 @@
-import json
-
 import pytest
 from usersnack import settings as app_settings
 
