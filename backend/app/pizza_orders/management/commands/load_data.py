@@ -2,7 +2,6 @@ from django.core.management.base import BaseCommand, CommandError
 from pizza_orders.models import FoodItem, FoodImage
 import os
 import json
-import pprint
 
 
 class Command(BaseCommand):
@@ -21,7 +20,6 @@ class Command(BaseCommand):
 
         with open(file_name) as jsonfile:
             food_data = json.load(jsonfile)
-        pprint.pprint(food_data)
 
         pizzas = food_data["pizzas"]
         extras = food_data["extras"]

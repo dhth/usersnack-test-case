@@ -3,6 +3,10 @@ import pytest
 
 @pytest.mark.django_db
 def test_get_extras(client, add_food_item):
+    """
+    Tests correctness of extras returned, based on data contained
+    in the DB.
+    """
     food_item_1 = add_food_item(
         name="Test Pizza 1",
         item_type="pizza",

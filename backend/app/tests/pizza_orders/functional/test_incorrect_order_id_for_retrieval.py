@@ -3,7 +3,9 @@ import pytest
 
 @pytest.mark.django_db
 def test_incorrect_order_id_for_retrieval(client, add_multiple_items):
-
+    """
+    Tests if 404 is returned for a non-existent order ID.
+    """
     (food_item_1, food_item_2, food_item_3) = add_multiple_items()
 
     resp = client.post(

@@ -3,7 +3,9 @@ import pytest
 
 @pytest.mark.django_db
 def test_create_order(client, add_multiple_items):
-
+    """
+    Tests correctness of order creation.
+    """
     (food_item_1, food_item_2, food_item_3) = add_multiple_items()
 
     resp = client.post(

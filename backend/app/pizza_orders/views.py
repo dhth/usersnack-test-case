@@ -1,29 +1,33 @@
-from django.http import Http404
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status, generics
-from rest_framework.pagination import PageNumberPagination
-
-from .models import Movie, FoodItem, Order, OrderDetail
-from django.db.models import ExpressionWrapper, F, DecimalField
-from django.shortcuts import get_object_or_404
-from .serializers import (
-    MovieSerializer,
-    PizzaSerializer,
-    ExtraSerializer,
-    CreateOrderSerializer,
-    OrderDetailResponseSerializer,
-    OrderSerializer,
-)
 from decimal import Decimal
+
 from django.core.paginator import Paginator
+from django.db.models import DecimalField, ExpressionWrapper, F
+from django.http import Http404, JsonResponse
+from django.shortcuts import get_object_or_404
+from rest_framework import generics, status
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from usersnack import settings as app_settings
 
-from django.http import JsonResponse
 from . import util
+from .models import FoodItem, Movie, Order, OrderDetail
+from .serializers import (
+    CreateOrderSerializer,
+    ExtraSerializer,
+    OrderDetailResponseSerializer,
+    OrderSerializer,
+    PizzaSerializer,
+)
 
 
 class PizzaList(APIView):
+    """
+    Returns a list of Pizzas. Response is paginated with page size
+    set by DEFAULT_PAGINATION_SIZE.
+    """
+
     def get(self, request, format=None):
 
         page_num = int(request.GET.get("page_num", 1))
@@ -47,6 +51,10 @@ class PizzaList(APIView):
 
 
 class ExtraList(APIView):
+    """
+    Returns a list of extras.
+    """
+
     def get(self, request):
         extras = FoodItem.objects.filter(item_type="extra").order_by("id")
         serializer = ExtraSerializer(extras, many=True)
@@ -55,7 +63,8 @@ class ExtraList(APIView):
 
 class CreateOrder(APIView):
     """
-    Create a order
+    Creates a new order by adding rows in the tables Order, and
+    OrderDetail.
     """
 
     def post(self, request, format=None):
@@ -87,6 +96,11 @@ class CreateOrder(APIView):
 
 
 class OrderDetailView(APIView):
+    """
+    Returns details for a specific order, including individual
+    components, and total amount.
+    """
+
     def get_order_components(self, pk):
         order_obj = get_object_or_404(Order, pk=pk)
         try:
@@ -125,6 +139,10 @@ class OrderDetailView(APIView):
 
 
 class OrderListView(APIView):
+    """
+    Returns a list of placed orders.
+    """
+
     def get(self, request, format=None):
         orders = Order.objects.all()
         serializer = OrderSerializer(orders, many=True)

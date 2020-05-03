@@ -3,7 +3,10 @@ import pytest
 
 @pytest.mark.django_db
 def test_invalid_extra_id_for_create_order_payload(client, add_multiple_items):
-
+    """
+    Tests if 400 is returned for a non-existent extra during
+    order creation.
+    """
     (food_item_1, food_item_2, food_item_3) = add_multiple_items()
 
     resp = client.post(

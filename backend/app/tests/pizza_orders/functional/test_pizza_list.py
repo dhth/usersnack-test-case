@@ -4,7 +4,10 @@ from usersnack import settings as app_settings
 
 @pytest.mark.django_db
 def test_get_pizzas(client, add_food_item):
-
+    """
+    Tests correctness of pizzas returned, based on data contained
+    in the DB.
+    """
     food_item_1 = add_food_item(
         name="Test Pizza 1",
         item_type="pizza",

@@ -3,7 +3,10 @@ import pytest
 
 @pytest.mark.django_db
 def test_missing_username_for_create_order_payload(client, add_multiple_items):
-
+    """
+    Tests if order creation returns a 400 is returned for
+    an empty user name field.
+    """
     (food_item_1, food_item_2, food_item_3) = add_multiple_items()
 
     resp = client.post(

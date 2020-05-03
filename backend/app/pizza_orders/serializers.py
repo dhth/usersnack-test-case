@@ -1,19 +1,10 @@
-from rest_framework import serializers
-from .models import Movie, FoodItem, FoodImage, Order, OrderDetail
 from django.db import transaction
+from rest_framework import serializers
+
 from usersnack import settings as app_settings
+
 from . import util
-
-
-class MovieSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Movie
-        fields = "__all__"
-        read_only_fields = (
-            "id",
-            "created_date",
-            "updated_date",
-        )
+from .models import FoodImage, FoodItem, Movie, Order, OrderDetail
 
 
 class FoodImageSerializer(serializers.ModelSerializer):
@@ -42,6 +33,7 @@ class ExtraSerializer(serializers.ModelSerializer):
 
 
 class OrderExtraSerializer(serializers.Serializer):
+
     extra = serializers.PrimaryKeyRelatedField(
         queryset=FoodItem.objects.filter(item_type="extra"), many=False
     )
@@ -49,6 +41,10 @@ class OrderExtraSerializer(serializers.Serializer):
 
 
 class CreateOrderSerializer(serializers.Serializer):
+    """
+    Serializer for order creation endpoint. Also handles
+    saving of new order to the DB.
+    """
 
     base_pizza = serializers.PrimaryKeyRelatedField(
         queryset=FoodItem.objects.filter(item_type="pizza"), many=False
@@ -103,6 +99,10 @@ class CreateOrderSerializer(serializers.Serializer):
 
 
 class OrderDetailResponseSerializer(serializers.Serializer):
+    """
+    Serializer for order detail view.
+    """
+
     name = serializers.CharField(source="food_item__name", max_length=200)
     item_type = serializers.CharField(
         source="food_item__item_type", max_length=200
@@ -112,6 +112,10 @@ class OrderDetailResponseSerializer(serializers.Serializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    """
+    Serializer for list of orders.
+    """
+
     class Meta:
         model = Order
         fields = ["id", "user_name", "user_address", "status", "created_date"]

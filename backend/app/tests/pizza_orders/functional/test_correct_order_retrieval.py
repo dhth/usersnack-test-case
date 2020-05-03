@@ -3,6 +3,10 @@ import pytest
 
 @pytest.mark.django_db
 def test_correct_order_retrieval(client, add_multiple_items):
+    """
+    Tests if details for a specific order are correct, including
+    individual components, and total amount.
+    """
 
     (food_item_1, food_item_2, food_item_3) = add_multiple_items()
 

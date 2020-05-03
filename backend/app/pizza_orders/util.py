@@ -3,7 +3,6 @@ import json
 import logging
 import os
 
-
 app_name = os.environ.get("APP_NAME", "Usersnack Backend")
 app_version = os.environ.get("APP_VERSION", "0.0.1")
 app_env = os.environ.get("APP_ENV", "development")

@@ -1,13 +1,12 @@
 from django.urls import path
 
 from .views import (
-    PizzaList,
-    ExtraList,
     CreateOrder,
+    ExtraList,
     OrderDetailView,
     OrderListView,
+    PizzaList,
 )
-
 
 urlpatterns = [
     path("api/pizzas/", PizzaList.as_view()),
