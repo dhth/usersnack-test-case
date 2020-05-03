@@ -130,4 +130,4 @@ AUTH_USER_MODEL = "pizza_orders.CustomUser"
 
 DEFAULT_PAGINATION_SIZE = 10
 
-PIZZA_IMG_DIR = os.environ.get("PIZZA_IMG_DIR", "/static/pizzas/")
+IMG_STATIC_DIR = os.environ.get("IMG_STATIC_DIR", "/static/")

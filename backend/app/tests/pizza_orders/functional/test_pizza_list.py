@@ -1,10 +1,12 @@
 import json
 
 import pytest
+from usersnack import settings as app_settings
 
 
 @pytest.mark.django_db
 def test_get_pizzas(client, add_food_item):
+
     food_item_1 = add_food_item(
         name="Test Pizza 1",
         item_type="pizza",
@@ -19,18 +21,28 @@ def test_get_pizzas(client, add_food_item):
     )
 
     resp = client.get(f"/api/pizzas/")
+    response = resp.json()
+
+    for pizza in response["pizzas"]:
+        del pizza["id"]
 
     expected_response = [
         {
+            # "id": 1,
             "name": "Test Pizza 1",
             "price": "16.99",
-            "images": [{"img_file": "img_file1.png"}],
+            "images": [
+                {"img_file": f"{app_settings.IMG_STATIC_DIR}img_file1.png"}
+            ],
         },
         {
+            # "id": 2,
             "name": "Test Pizza 2",
             "price": "12.99",
-            "images": [{"img_file": "img_file2.png"}],
+            "images": [
+                {"img_file": f"{app_settings.IMG_STATIC_DIR}img_file2.png"}
+            ],
         },
     ]
     assert resp.status_code == 200
-    assert resp.data == expected_response
+    assert response["pizzas"] == expected_response

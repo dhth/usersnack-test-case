@@ -18,6 +18,11 @@ def test_get_extras(client, add_food_item):
 
     resp = client.get(f"/api/extras/")
 
+    response = resp.json()
+    print(response)
+    for extra in response["extras"]:
+        del extra["id"]
+
     expected_response = [
         {"name": "Test Extra 1", "price": "2.00"},
         {"name": "Test Extra 2", "price": "2.00"},
@@ -25,4 +30,4 @@ def test_get_extras(client, add_food_item):
     ]
 
     assert resp.status_code == 200
-    assert resp.data == expected_response
+    assert response["extras"] == expected_response

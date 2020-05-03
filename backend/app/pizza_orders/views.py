@@ -6,6 +6,7 @@ from rest_framework.pagination import PageNumberPagination
 
 from .models import Movie, FoodItem, Order, OrderDetail
 from django.db.models import ExpressionWrapper, F, DecimalField
+from django.shortcuts import get_object_or_404
 from .serializers import (
     MovieSerializer,
     PizzaSerializer,
@@ -92,11 +93,16 @@ class CreateOrder(APIView):
             return JsonResponse(
                 {"success": True, "order": new_order_serialized.data,}
             )
-        return JsonResponse({"nope": serializer.errors})
+        else:
+            return JsonResponse(
+                {"success": False, "errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class OrderDetailView(APIView):
     def get_order_components(self, pk):
+        order_obj = get_object_or_404(Order, pk=pk)
         try:
             return (
                 OrderDetail.objects.filter(order_id=pk)

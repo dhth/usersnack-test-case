@@ -15,3 +15,22 @@ def add_food_item():
         return food_item
 
     return _add_food_item
+
+
+@pytest.fixture(scope="function")
+def add_multiple_items():
+    def _add_multiple_items():
+        food_item_1 = FoodItem.objects.create(
+            name="Test Pizza 1", item_type="pizza", price=16.99
+        )
+
+        food_item_2 = FoodItem.objects.create(
+            name="Test Extra 1", item_type="extra", price=2.0
+        )
+
+        food_item_3 = FoodItem.objects.create(
+            name="Test Extra 2", item_type="extra", price=1.0
+        )
+        return (food_item_1, food_item_2, food_item_3)
+
+    return _add_multiple_items

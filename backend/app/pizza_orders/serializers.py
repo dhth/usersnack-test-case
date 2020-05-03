@@ -30,7 +30,7 @@ class FoodImageSerializer(serializers.ModelSerializer):
         fields = ["img_file"]
 
     def get_image_url(self, obj):
-        return f"{app_settings.PIZZA_IMG_DIR}{obj.img_file}"
+        return f"{app_settings.IMG_STATIC_DIR}{obj.img_file}"
 
 
 class PizzaSerializer(serializers.ModelSerializer):
