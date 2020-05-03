@@ -4,14 +4,17 @@ from rest_framework.response import Response
 from rest_framework import status, generics
 from rest_framework.pagination import PageNumberPagination
 
-from .models import Movie, FoodItem
+from .models import Movie, FoodItem, Order, OrderDetail
+from django.db.models import ExpressionWrapper, F, DecimalField
 from .serializers import (
     MovieSerializer,
     PizzaSerializer,
     ExtraSerializer,
+    CreateOrderSerializer,
+    OrderDetailResponseSerializer,
     OrderSerializer,
 )
-
+from decimal import Decimal
 from django.core.paginator import Paginator
 from usersnack import settings as app_settings
 
@@ -58,8 +61,6 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 
 class PizzaList(APIView):
-    # pagination_class = StandardResultsSetPagination
-
     def get(self, request, format=None):
 
         page_num = int(request.GET.get("page_num", 1))
@@ -83,10 +84,51 @@ class ExtraList(APIView):
 
 class CreateOrder(APIView):
     def post(self, request, format=None):
-        serializer = OrderSerializer(data=request.data)
+        serializer = CreateOrderSerializer(data=request.data)
         if serializer.is_valid():
             new_order = serializer.save()
+            new_order_serialized = OrderSerializer(new_order, many=False)
             return JsonResponse(
-                {"yo": str(serializer.validated_data), "order": str(new_order)}
+                {"success": True, "order": new_order_serialized.data,}
             )
         return JsonResponse({"nope": serializer.errors})
+
+
+class OrderDetailView(APIView):
+    def get_order_components(self, pk):
+        try:
+            return (
+                OrderDetail.objects.filter(order_id=pk)
+                .values("food_item__name", "food_item__item_type", "quantity",)
+                .annotate(
+                    amount=ExpressionWrapper(
+                        F("food_item__price") * F("quantity"),
+                        output_field=DecimalField(),
+                    )
+                )
+            )
+        except Exception as e:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        order_components = self.get_order_components(pk)
+        total = 0
+        for order_component in order_components:
+            total += Decimal(order_component["amount"])
+        serializer = OrderDetailResponseSerializer(order_components, many=True)
+        return JsonResponse(
+            {
+                "success": True,
+                "order_id": pk,
+                "order_items": serializer.data,
+                "total": total,
+            }
+        )
+
+
+class OrderListView(APIView):
+    def get(self, request, format=None):
+        orders = Order.objects.all()
+        serializer = OrderSerializer(orders, many=True)
+        return JsonResponse({"success": True, "orders": serializer.data})
+        # return Response(serializer.data)

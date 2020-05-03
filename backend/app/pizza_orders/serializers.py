@@ -56,7 +56,7 @@ class OrderExtraSerializer(serializers.Serializer):
     quantity = serializers.IntegerField(required=True)
 
 
-class OrderSerializer(serializers.Serializer):
+class CreateOrderSerializer(serializers.Serializer):
 
     base_pizza = serializers.PrimaryKeyRelatedField(
         queryset=FoodItem.objects.filter(item_type="pizza"), many=False
@@ -88,3 +88,23 @@ class OrderSerializer(serializers.Serializer):
                 )
                 extra_row.save()
         return new_order
+
+
+class OrderDetailResponseSerializer(serializers.Serializer):
+    name = serializers.CharField(source="food_item__name", max_length=200)
+    item_type = serializers.CharField(
+        source="food_item__item_type", max_length=200
+    )
+    quantity = serializers.IntegerField()
+    amount = serializers.DecimalField(4, 2)
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ["id", "user_name", "user_address", "status", "created_date"]
+        read_only_fields = (
+            "id",
+            "created_date",
+            "updated_date",
+        )
