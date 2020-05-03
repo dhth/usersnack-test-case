@@ -35,7 +35,9 @@ class FoodItem(models.Model):
 
 
 class FoodImage(models.Model):
-    food_id = models.ForeignKey(FoodItem, on_delete=models.PROTECT)
+    food_id = models.ForeignKey(
+        FoodItem, on_delete=models.PROTECT, related_name="images"
+    )
     img_file = models.CharField(max_length=100)
 
 

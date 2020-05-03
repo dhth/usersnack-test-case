@@ -8,9 +8,7 @@ def test_movie_model(add_food_item):
     food_item_1 = add_food_item(
         name="Test Pizza", item_type="pizza", price=16.99
     )
-    food_item_1.save()
     food_item_2 = add_food_item(name="Test Extra", item_type="extra", price=1.0)
-    food_item_2.save()
 
     user_name = "Dhruv"
     user_address = "Wien"

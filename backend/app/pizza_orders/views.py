@@ -1,10 +1,10 @@
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, generics
 
-from .models import Movie
-from .serializers import MovieSerializer
+from .models import Movie, FoodItem
+from .serializers import MovieSerializer, FoodItemSerializer
 
 # Create your views here.
 from django.http import JsonResponse
@@ -20,7 +20,7 @@ class MovieList(APIView):
         movies = Movie.objects.all()
         serializer = MovieSerializer(movies, many=True)
         return Response(serializer.data)
-        
+
     def post(self, request, format=None):
         serializer = MovieSerializer(data=request.data)
         if serializer.is_valid():
@@ -39,4 +39,11 @@ class MovieDetail(APIView):
     def get(self, request, pk, format=None):
         movie = self.get_object(pk)
         serializer = MovieSerializer(movie)
-        return Response(serializer.data) 
+        return Response(serializer.data)
+
+
+class PizzaList(APIView):
+    def get(self, request, format=None):
+        pizzas = FoodItem.objects.filter(item_type="pizza")
+        serializer = FoodItemSerializer(pizzas, many=True)
+        return Response(serializer.data)
