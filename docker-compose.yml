@@ -14,6 +14,19 @@ services:
       - ./backend/app/.env.dev
     depends_on:
       - usersnack-db
+  # backend-prod:
+  #   build:
+  #    context: ./backend/app
+  #    dockerfile: Dockerfile.prod
+  #   volumes:
+  #     - ./backend/app/:/usr/src/app/
+  #   ports:
+  #     - 8001:8765
+  #   environment:
+  #     - PORT=8765
+  #     - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+  #   depends_on:
+  #     - usersnack-db      
   usersnack-db:
     image: postgres:12.0-alpine
     volumes:

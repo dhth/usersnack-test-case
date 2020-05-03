@@ -143,3 +143,4 @@ local_only*
 
 .DS_Store
 .vscode
+staticfiles

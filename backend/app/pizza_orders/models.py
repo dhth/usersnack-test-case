@@ -7,18 +7,11 @@ class CustomUser(AbstractUser):
     pass
 
 
-class Movie(models.Model):
-    title = models.CharField(max_length=255)
-    genre = models.CharField(max_length=255)
-    year = models.CharField(max_length=4)
-    created_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"{self.title}"
-
-
 class Order(models.Model):
+    """
+    Source of truth for orders.
+    """
+
     status = models.CharField(max_length=50, default="initiated")
     user_name = models.CharField(max_length=255)
     user_address = models.CharField(max_length=255)
@@ -27,6 +20,11 @@ class Order(models.Model):
 
 
 class FoodItem(models.Model):
+    """
+    Stores all food items offered by the store.
+    TODO: Add a relationship for item_type instead of CharField.
+    """
+
     name = models.CharField(max_length=255)
     item_type = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=6, decimal_places=2)
@@ -34,6 +32,10 @@ class FoodItem(models.Model):
 
 
 class FoodImage(models.Model):
+    """
+    Maps foods to their images.
+    """
+
     food_id = models.ForeignKey(
         FoodItem, on_delete=models.PROTECT, related_name="images"
     )
@@ -41,6 +43,11 @@ class FoodImage(models.Model):
 
 
 class OrderDetail(models.Model):
+    """
+    Stores each food component for an order, along with quantity for
+    each.
+    """
+
     order_id = models.ForeignKey(Order, on_delete=models.PROTECT)
     food_item = models.ForeignKey(FoodItem, on_delete=models.PROTECT)
     quantity = models.PositiveSmallIntegerField()

@@ -29,7 +29,6 @@ def test_get_pizzas(client, add_food_item):
 
     expected_response = [
         {
-            # "id": 1,
             "name": "Test Pizza 1",
             "price": "16.99",
             "images": [
@@ -37,7 +36,6 @@ def test_get_pizzas(client, add_food_item):
             ],
         },
         {
-            # "id": 2,
             "name": "Test Pizza 2",
             "price": "12.99",
             "images": [

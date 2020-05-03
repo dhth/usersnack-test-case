@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 from usersnack import settings as app_settings
 
 from . import util
-from .models import FoodItem, Movie, Order, OrderDetail
+from .models import FoodItem, Order, OrderDetail
 from .serializers import (
     CreateOrderSerializer,
     ExtraSerializer,
@@ -47,7 +47,9 @@ class PizzaList(APIView):
             )
         pizzas_page = paginator.page(page_num)
         serializer = PizzaSerializer(pizzas_page, many=True)
-        return JsonResponse({"success": True, "pizzas": serializer.data})
+        return JsonResponse(
+            {"success": True, "pizzas": serializer.data, "page_num": page_num}
+        )
 
 
 class ExtraList(APIView):
@@ -64,7 +66,7 @@ class ExtraList(APIView):
 class CreateOrder(APIView):
     """
     Creates a new order by adding rows in the tables Order, and
-    OrderDetail.
+    OrderDetail. Returns a 400 if request data is invalid.
     """
 
     def post(self, request, format=None):

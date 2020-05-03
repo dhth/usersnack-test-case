@@ -4,7 +4,7 @@ from rest_framework import serializers
 from usersnack import settings as app_settings
 
 from . import util
-from .models import FoodImage, FoodItem, Movie, Order, OrderDetail
+from .models import FoodImage, FoodItem, Order, OrderDetail
 
 
 class FoodImageSerializer(serializers.ModelSerializer):
