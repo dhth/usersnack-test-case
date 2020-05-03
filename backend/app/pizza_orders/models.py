@@ -20,6 +20,7 @@ class Movie(models.Model):
 
 
 class Order(models.Model):
+    status = models.CharField(max_length=50, default="initiated")
     user_name = models.CharField(max_length=255)
     user_address = models.CharField(max_length=255)
     created_date = models.DateTimeField(auto_now_add=True)
