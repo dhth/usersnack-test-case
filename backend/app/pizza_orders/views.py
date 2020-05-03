@@ -72,14 +72,15 @@ class PizzaList(APIView):
             )
         pizzas_page = paginator.page(page_num)
         serializer = PizzaSerializer(pizzas_page, many=True)
-        return Response(serializer.data)
+        return JsonResponse({"success": True, "pizzas": serializer.data})
 
 
 class ExtraList(APIView):
     def get(self, request):
         extras = FoodItem.objects.filter(item_type="extra").order_by("id")
         serializer = ExtraSerializer(extras, many=True)
-        return Response(serializer.data)
+        # return Response(serializer.data)
+        return JsonResponse({"success": True, "extras": serializer.data})
 
 
 class CreateOrder(APIView):

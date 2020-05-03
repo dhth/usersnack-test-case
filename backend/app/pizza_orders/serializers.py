@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Movie, FoodItem, FoodImage, Order, OrderDetail
 from django.db import transaction
+from usersnack import settings as app_settings
 
 
 class MovieSerializer(serializers.ModelSerializer):
@@ -22,9 +23,14 @@ class MovieSerializer(serializers.ModelSerializer):
 
 
 class FoodImageSerializer(serializers.ModelSerializer):
+    img_file = serializers.SerializerMethodField("get_image_url")
+
     class Meta:
         model = FoodImage
         fields = ["img_file"]
+
+    def get_image_url(self, obj):
+        return f"{app_settings.PIZZA_IMG_DIR}{obj.img_file}"
 
 
 class PizzaSerializer(serializers.ModelSerializer):
