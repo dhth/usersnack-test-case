@@ -8,6 +8,8 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV DEBUG 0
+
+# just for test case, should be done via CICD in production
 ENV SECRET_KEY 8IdMYkQySJg7FTMJiH0*U8A4KckZ5rkUZ@Br6!l4Gg0q$LC*TTKkIOR$f^%C
 ENV DJANGO_ALLOWED_HOSTS .herokuapp.com
 
