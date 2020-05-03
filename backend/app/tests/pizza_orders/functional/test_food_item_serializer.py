@@ -1,4 +1,4 @@
-from pizza_orders.serializers import FoodItemSerializer
+# from pizza_orders.serializers import PizzaSerializer
 
 
 # def test_valid_food_item_serializer():

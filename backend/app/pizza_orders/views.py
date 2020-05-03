@@ -5,7 +5,12 @@ from rest_framework import status, generics
 from rest_framework.pagination import PageNumberPagination
 
 from .models import Movie, FoodItem
-from .serializers import MovieSerializer, FoodItemSerializer
+from .serializers import (
+    MovieSerializer,
+    PizzaSerializer,
+    ExtraSerializer,
+    OrderSerializer,
+)
 
 from django.core.paginator import Paginator
 from usersnack import settings as app_settings
@@ -52,7 +57,7 @@ class StandardResultsSetPagination(PageNumberPagination):
     max_page_size = 5
 
 
-class PizzaList(generics.GenericAPIView):
+class PizzaList(APIView):
     # pagination_class = StandardResultsSetPagination
 
     def get(self, request, format=None):
@@ -65,5 +70,23 @@ class PizzaList(generics.GenericAPIView):
                 {"success": False, "detail": "page_num exceeded limit"}
             )
         pizzas_page = paginator.page(page_num)
-        serializer = FoodItemSerializer(pizzas_page, many=True)
+        serializer = PizzaSerializer(pizzas_page, many=True)
         return Response(serializer.data)
+
+
+class ExtraList(APIView):
+    def get(self, request):
+        extras = FoodItem.objects.filter(item_type="extra").order_by("id")
+        serializer = ExtraSerializer(extras, many=True)
+        return Response(serializer.data)
+
+
+class CreateOrder(APIView):
+    def post(self, request, format=None):
+        serializer = OrderSerializer(data=request.data)
+        if serializer.is_valid():
+            new_order = serializer.save()
+            return JsonResponse(
+                {"yo": str(serializer.validated_data), "order": str(new_order)}
+            )
+        return JsonResponse({"nope": serializer.errors})
